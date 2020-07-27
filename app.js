@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
+const figlet = require('figlet');
 
 var connection = mysql.createConnection({
     host:"localhost",
@@ -11,8 +12,12 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
     if(err) throw err;
+    welcome();
     console.log("You are connected to your database!");
 });
+
+
+
 
 function options() {
     inquirer
@@ -22,7 +27,7 @@ function options() {
         message: "What would you like to do?",
         choices: [
             "View All Employees",
-            "View All Employees by Department",
+            "View All Departments",
             "View All Employees by Manager",
             "Add Employee",
             "Remove Employee",
@@ -35,9 +40,8 @@ function options() {
         viewAllEmployees();
         break;
 
-        case "View All Employees by Department":
-        //add function
-        console.log("Nothing");
+        case "View All Departments":
+        viewAllDepartments();
         break;
 
         case "View All Employees by Manager":
@@ -70,9 +74,21 @@ function options() {
     })
 }
 
-options();
 
-
+function welcome() {
+    connection.connect(function(err){
+        figlet.text('Employee Managment', function(err,data) {
+            if (err) {
+                console.log("Uh oh, there's an error.");
+                console.dir(err);
+                return;
+            }
+            console.log(data);
+        })
+        options()
+    })
+ 
+}
 
 //* Functions for options *//
 
@@ -83,4 +99,12 @@ function viewAllEmployees(answer) {
       console.log(res);
     }) ;
     options();
+}
+
+function viewAllDepartments(answer) {
+    const query = "SELECT * FROM department"
+    connection.query(query, function(err, res) {
+        if(err) throw err;
+        console.log(res);
+    })
 }
