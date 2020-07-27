@@ -28,7 +28,7 @@ function options() {
         choices: [
             "View All Employees",
             "View All Departments",
-            "View All Employees by Manager",
+            "View All Roles",
             "Add Employee",
             "Remove Employee",
             "Update Employee Role",
@@ -44,9 +44,8 @@ function options() {
         viewAllDepartments();
         break;
 
-        case "View All Employees by Manager":
-        //add function
-        console.log("Nothing");
+        case "View All Roles":
+        viewAllRoles();
         break;
 
         case "Add Employee":
@@ -64,7 +63,7 @@ function options() {
         console.log("Nothing");
         break;
 
-        case "Update Employee Managere":
+        case "Update Employee Manager":
         //add function
         console.log("Nothing");
         break;
@@ -107,4 +106,14 @@ function viewAllDepartments(answer) {
         if(err) throw err;
         console.log(res);
     })
+    options();
+}
+
+function viewAllRoles(answer) {
+    const query = "SELECT title FROM `role`"
+    connection.query(query, function(err, res){
+        if(err) throw err;
+        console.log(res);
+    })
+    options();
 }
