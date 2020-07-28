@@ -53,8 +53,7 @@ function options() {
         break;
 
         case "Add Employee":
-        // addEmployee();
-        console.log("Add employee");
+        addEmployee();
         break;
 
         case "Remove Employee":
@@ -122,54 +121,38 @@ function viewAllEmployees(answer) {
 }
 
 
-// function addEmployee(answer) {
-//     inquirer
-//     .prompt(
-//         {
-//             type: 'input',
-//             name: 'first_name',
-//             message: 'What is the employees first name?'
-//         },
-//         {
-//             type: 'input',
-//             name: 'last_name',
-//             message: 'What is the employees last name?'
-//         },
-//         {
-//             type: 'list',
-//             name: 'role',
-//             message:'What is the employees role?',
-//             choices: [
-//                 "Sales Lead",
-//                 "Salesperson",
-//                 "Load Engineer",
-//                 "Software Engineer",
-//                 "Accountant",
-//                 "Legal Team Lead",
-//                 "Lawyer"
-//             ]
-//         },
-//         {
-//             type: 'number',
-//             name: 'manager_id',
-//             message: 'What is your managers ID number? If they do not have manager, write null'
-//         }
+function addEmployee() {
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'first_name',
+            message: 'What is the employees first name?'
+        },
+        {
+            type: 'input',
+            name: 'last_name',
+            message: 'What is the employees last name?'
+        },
+        {
+            type: 'number',
+            name: 'role_id',
+            message:'What is the employees roleID?',
+        },
+        {
+            type: 'number',
+            name: 'manager_id',
+            message: 'What is your managers ID number? If they do not have manager, press enter',
+            default: 0
+        }
 
-//     ).then(function(answers => {
-//         if(answers.role === "Sales Lead") {
-//             roleid = 1
-//         }else {
-//             roleid = 2
-//         }
-//         console.log("roleid", roleid);
-
-//         // connection.query(`INSERT employee (first_name, last_name, role_id, manager_id) VALUES ('${answers.first_name}', '${answers.last_name}', '${answers.role_id}', '${answers.manager_id}')`, function(err, data){
-//         //     if(err) throw err;
-//         //     console.log("Employee sucessfully added!")
-//         })
-//         options();
-//     }
-// }
+    ]).then( answers => {
+        connection.query(`INSERT employee (first_name, last_name, role_id, manager_id) VALUES ('${answers.first_name}', '${answers.last_name}', '${answers.role_id}', '${answers.manager_id}')`, function(err, data){
+        if(err) throw err;
+        console.log("Employee sucessfully added!")
+        })
+    })
+}
 
 //* DEPARTMENT FUNCTIONS *//
 
@@ -266,5 +249,4 @@ function deleteRole() {
             console.log("You have sucessfully deleted " + '" ' + answers.role + ' "' + "role" );
         })
     })
-
 }
