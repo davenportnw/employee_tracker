@@ -57,8 +57,7 @@ function options() {
         break;
 
         case "Remove Employee":
-        //add function
-        console.log("Nothing");
+        deleteEmployee();
         break;
 
         case "Add Department":
@@ -154,6 +153,21 @@ function addEmployee() {
     })
 }
 
+
+function deleteEmployee() {
+    inquirer
+    .prompt({
+        type: 'input',
+        name: 'name',
+        message: 'Which employee would you like to remove?'
+    }).then (answers => {
+        const query = "DELETE FROM employee WHERE first_name = ? "
+        connection.query(query, [answers.name], function(err, data) {
+            if(err) throw err;
+            console.log("You have sucessfully removed " + '"' + answers.name + '"');
+        })
+    })
+}
 //* DEPARTMENT FUNCTIONS *//
 
 function viewAllDepartments(answer) {
