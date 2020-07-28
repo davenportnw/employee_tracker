@@ -71,8 +71,7 @@ function options() {
         break;
 
         case "Add a role":
-        //add function
-        console.log("Nothing");
+        addRole();
         break;
 
         case "Remove a role":
@@ -113,6 +112,8 @@ function welcome() {
 
 //* Functions for options *//
 
+//* EMPLOYEE FUNCTION *//
+
 function viewAllEmployees(answer) {
     const query = "SELECT e.first_name, e.last_name, title, salary, department_name, m.first_name, m.last_name FROM `role` INNER JOIN department ON department.id =`role`.department_id INNER JOIN employee AS e ON e.role_id = `role`.id LEFT JOIN employee AS m ON m.id = e.manager_id;"
     connection.query(query, function(err, res) {
@@ -121,23 +122,6 @@ function viewAllEmployees(answer) {
     }) ;
 }
 
-function viewAllDepartments(answer) {
-    const query = "SELECT * FROM department"
-    connection.query(query, function(err, res) {
-        if(err) throw err;
-        console.log(res);
-    })
-
-}
-
-function viewAllRoles(answer) {
-    const query = "SELECT title FROM `role`"
-    connection.query(query, function(err, res){
-        if(err) throw err;
-        console.log(res);
-    })
- 
-}
 
 // function addEmployee(answer) {
 //     inquirer
@@ -188,6 +172,17 @@ function viewAllRoles(answer) {
 //     }
 // }
 
+//* DEPARTMENT FUNCTIONS *//
+
+function viewAllDepartments(answer) {
+    const query = "SELECT * FROM department"
+    connection.query(query, function(err, res) {
+        if(err) throw err;
+        console.log(res);
+    })
+
+}
+
 function addDepartment() { 
     inquirer
     .prompt ({
@@ -217,4 +212,43 @@ function removeDepartment() {
         })
     })
     // options();
+}
+
+//* ROLE FUNCTIONS *//
+
+function viewAllRoles(answer) {
+    const query = "SELECT title FROM `role`"
+    connection.query(query, function(err, res){
+        if(err) throw err;
+        console.log(res);
+    })
+ 
+}
+
+function addRole() {
+    const prompt = inquirer.createPromptModule();
+    prompt ([
+        {
+        type: 'input',
+        name: 'role_name',
+        message: 'What is the name of the new role?'
+    },
+    {
+        type: 'decimal',
+        name: 'salary',
+        message: 'What will be the salary of the new role? '
+    },
+    {
+        type: 'number',
+        name: 'department_id',
+        message: 'What is the new role department id? For refrence view the departments'
+    
+    }
+    ]).then (answers => {
+        const query = "INSERT INTO `role` (title, salary, department_id) VALUES (?,?,?) "
+    connection.query(query, [answers.role_name, answers.salary, answers.department_id], function(err, data) {
+        if (err) throw err;
+        console.log("You sucessfully added the " + '"' + answers.role_name + '"' + "role" );
+    })
+    })
 }
