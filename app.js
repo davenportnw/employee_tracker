@@ -67,8 +67,7 @@ function options() {
         break;
 
         case "Remove Department":
-        //add function
-        console.log("nothing");
+        removeDepartment();
         break;
 
         case "Add a role":
@@ -107,8 +106,8 @@ function welcome() {
             }
             console.log(data);
         })
-        options()
     })
+    options();
  
 }
 
@@ -120,7 +119,6 @@ function viewAllEmployees(answer) {
       if(err) throw err;
       console.log(res);
     }) ;
-    options();
 }
 
 function viewAllDepartments(answer) {
@@ -129,7 +127,7 @@ function viewAllDepartments(answer) {
         if(err) throw err;
         console.log(res);
     })
-    options();
+
 }
 
 function viewAllRoles(answer) {
@@ -138,7 +136,7 @@ function viewAllRoles(answer) {
         if(err) throw err;
         console.log(res);
     })
-    options();
+ 
 }
 
 // function addEmployee(answer) {
@@ -200,7 +198,23 @@ function addDepartment() {
         const query = "INSERT INTO department (department_name) VALUES (?)";
         connection.query(query, [answers.deptName], function (err, data) {
             if (err) throw err;
-            console.log("Department sucessfully added!");
+            console.log(answers.deptName + " department sucessfully added!");
         })
     })
+}
+
+function removeDepartment() {
+    inquirer
+    .prompt({
+        type: 'input',
+        name:'removeDept',
+        message: 'Which department would you like to remove?'
+    }).then(answers => {
+        const query = "DELETE FROM department WHERE department_name = (?)"
+        connection.query(query, [answers.removeDept], function(err, data) {
+            if (err) throw err;
+            console.log("Sucessfully deleted " + ' " ' +  answers.removeDept + ' " ');
+        })
+    })
+    // options();
 }
