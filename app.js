@@ -75,8 +75,7 @@ function options() {
         break;
 
         case "Remove a role":
-        //add function
-        console.log("Nothing");
+        deleteRole();
         break;
 
         case "Update Employee Role":
@@ -251,4 +250,21 @@ function addRole() {
         console.log("You sucessfully added the " + '"' + answers.role_name + '"' + "role" );
     })
     })
+}
+
+
+function deleteRole() {
+    inquirer
+    .prompt ({
+        type: 'input',
+        name: 'role',
+        message: 'What role would you like to delete?'
+    }).then (answers => {
+        const query = "DELETE FROM `role` WHERE title = ? "
+        connection.query(query, [answers.role], function(err, data) {
+            if (err) throw err;
+            console.log("You have sucessfully deleted " + '" ' + answers.role + ' "' + "role" );
+        })
+    })
+
 }
