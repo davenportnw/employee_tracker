@@ -35,8 +35,7 @@ function options() {
             "Remove Department",
             "Add a role",
             "Remove a role",
-            "Update Employee Role",
-            "Update Employee Manager"
+            "Update Employee"
         ]
     }).then(function(answer) {
         switch (answer.options) {
@@ -76,14 +75,8 @@ function options() {
         deleteRole();
         break;
 
-        case "Update Employee Role":
-        //add function
-        console.log("Nothing");
-        break;
-
-        case "Update Employee Manager":
-        //add function
-        console.log("Nothing");
+        case "Update Employee":
+        updateEmployee();
         break;
         }
 
@@ -137,6 +130,14 @@ function addEmployee() {
             type: 'number',
             name: 'role_id',
             message:'What is the employees roleID?',
+            validate: function(value) {
+                if(value <= 5) {
+                    return true;
+                }else{
+                    return 'Must be a number between 1- 5'
+                }
+
+            }
         },
         {
             type: 'number',
@@ -165,6 +166,72 @@ function deleteEmployee() {
         connection.query(query, [answers.name], function(err, data) {
             if(err) throw err;
             console.log("You have sucessfully removed " + '"' + answers.name + '"');
+        })
+    })
+}
+
+function updateEmployee() {
+    inquirer
+    .prompt([ 
+        {
+            type: 'list',
+            name: 'choices',
+            message: 'What would you like to update?',
+            choices: [
+                "Update Name",
+                "Update Role ID",
+                "Update Manager ID"
+            ]
+        }
+    ]).then (answers => {
+        switch (answers.choices) {
+            case "Update Name":
+            updateName();
+            break;
+
+            case "Update Role ID":
+            //add function
+            console.log("Nothing");
+            break;
+
+            case "Update Manager ID":
+            //add function
+            console.log("Nothing");
+            break;
+    }
+})
+
+//Update employee functions//
+
+function updateName() { 
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'changeFirstname',
+            message: 'Which employee would you like to change?'
+
+        },
+        {
+            type: 'input',
+            name: 'firstName',
+            message: 'What is the updated first name?'
+        },
+        {
+            type: 'input',
+            name: 'lastName',
+            message: 'What is the updated last name?'
+        }
+    ]).then (answers => {
+        const query1 = "UPDATE employee SET first_name = ? WHERE first_name = ?"
+        connection.query(query1, [answers.firstName,answers.changeFirstName], function(err, data) { 
+            if(err) throw err;
+            console.log("You have sucessfully updated!" )
+        })
+        const query2 = "UPDATE employee SET last_name =? WHERE first_name =?"
+        connection.query(query2, [answers.lastName, answers.changeFirstName], function(err, data) { 
+            if(err) throw err;
+
         })
     })
 }
@@ -212,14 +279,13 @@ function removeDepartment() {
 
 //* ROLE FUNCTIONS *//
 
-function viewAllRoles(answer) {
+function viewAllRoles() {
     const query = "SELECT title FROM `role`"
     connection.query(query, function(err, res){
         if(err) throw err;
         console.log(res);
     })
- 
-}
+};
 
 function addRole() {
     const prompt = inquirer.createPromptModule();
@@ -247,7 +313,7 @@ function addRole() {
         console.log("You sucessfully added the " + '"' + answers.role_name + '"' + "role" );
     })
     })
-}
+};
 
 
 function deleteRole() {
@@ -263,4 +329,4 @@ function deleteRole() {
             console.log("You have sucessfully deleted " + '" ' + answers.role + ' "' + "role" );
         })
     })
-}
+}}
