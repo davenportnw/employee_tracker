@@ -209,7 +209,7 @@ function updateName() {
         {
             type: 'input',
             name: 'changeFirstname',
-            message: 'Which employee would you like to change?'
+            message: 'Which employee would you like to change? (First name only)'
 
         },
         {
