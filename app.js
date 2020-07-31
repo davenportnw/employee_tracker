@@ -122,6 +122,17 @@ function viewAllEmployees() {
     }
 )}
 
+function viewAllDepartments() {
+    const query = "SELECT * FROM department";
+    connection.query(query, function(err, res) {
+        if(err) throw err;
+        console.log(space),
+        console.table(res),
+        console.log('\n')
+        options();
+    })
+}
+
 
 function addEmployee() {
     inquirer
@@ -245,16 +256,8 @@ function updateName() {
         })
     })
 }
-//* DEPARTMENT FUNCTIONS *//
 
-function viewAllDepartments(answer) {
-    const query = "SELECT * FROM department"
-    connection.query(query, function(err, res) {
-        if(err) throw err;
-        console.table(res);
-    })
 
-}
 
 function addDepartment() { 
     inquirer
