@@ -107,9 +107,9 @@ function options() {
 
 
 
-//* Functions for options *//
+//* FUNCTIONS FOR OPTIONS *//
 
-//* EMPLOYEE FUNCTION *//
+//* VIEW *//
 
 function viewAllEmployees() {
     var query = "SELECT e.first_name, e.last_name, title, salary, department_name, m.first_name, m.last_name FROM `role` INNER JOIN department ON department.id =`role`.department_id INNER JOIN employee AS e ON e.role_id = `role`.id LEFT JOIN employee AS m ON m.id = e.manager_id;";
@@ -117,7 +117,7 @@ function viewAllEmployees() {
         if(err) throw err;
         console.log(space),
         console.table(res),
-        console.log('\n')
+        console.log('\n'),
         options();
     }
 )}
@@ -132,6 +132,18 @@ function viewAllDepartments() {
         options();
     })
 }
+
+
+function viewAllRoles() {
+    const query = "SELECT title FROM `role`";
+    connection.query(query, function(err, res){
+        if(err) throw err;
+        console.log(space),
+        console.table(res),
+        console.log('\n')
+        options();
+    })
+};
 
 
 function addEmployee() {
@@ -287,18 +299,9 @@ function removeDepartment() {
             console.log("Sucessfully deleted " + ' " ' +  answers.removeDept + ' " ');
         })
     })
-    // options();
 }
 
-//* ROLE FUNCTIONS *//
 
-function viewAllRoles() {
-    const query = "SELECT title FROM `role`"
-    connection.query(query, function(err, res){
-        if(err) throw err;
-        console.log(res);
-    })
-};
 
 function addRole() {
     const prompt = inquirer.createPromptModule();
