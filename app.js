@@ -1,24 +1,45 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 const figlet = require('figlet');
+const consoleTable = require('console.table');
 
-var connection = mysql.createConnection({
-    host:"localhost",
-    port: 3306,
-    user: "root",
-    password: "d0Lc3d23!",
-    database: "employee_trackerDB"
-});
+
+let connection =  mysql.createConnection({
+host:"localhost",
+port: 3306,
+user: "root",
+password: "d0Lc3d23!",
+database: "employee_trackerDB"
+})
 
 connection.connect(function(err) {
     if(err) throw err;
     welcome();
     console.log("You are connected to your database!");
-});
+})
 
 
+function welcome() {
+    connection.connect(function(err){
+        figlet.text('Employee Managment', function(err,data) {
+            if (err){
+                console.log("Uh oh, there's an error.");
+                console.dir(err);
+                return;
+            }
+            console.log(data); 
+        })
+        options();
+    }
+)}
+  
+
+//USER FRIENDLY VIEWING VARIABLES//
+
+const space = '\n \n';
 
 
+//USER OPTIONS MENU //
 function options() {
     inquirer
     .prompt({
@@ -85,32 +106,21 @@ function options() {
 }
 
 
-function welcome() {
-    connection.connect(function(err){
-        figlet.text('Employee Managment', function(err,data) {
-            if (err) {
-                console.log("Uh oh, there's an error.");
-                console.dir(err);
-                return;
-            }
-            console.log(data);
-        })
-    })
-    options();
- 
-}
 
 //* Functions for options *//
 
 //* EMPLOYEE FUNCTION *//
 
-function viewAllEmployees(answer) {
-    const query = "SELECT e.first_name, e.last_name, title, salary, department_name, m.first_name, m.last_name FROM `role` INNER JOIN department ON department.id =`role`.department_id INNER JOIN employee AS e ON e.role_id = `role`.id LEFT JOIN employee AS m ON m.id = e.manager_id;"
+function viewAllEmployees() {
+    var query = "SELECT e.first_name, e.last_name, title, salary, department_name, m.first_name, m.last_name FROM `role` INNER JOIN department ON department.id =`role`.department_id INNER JOIN employee AS e ON e.role_id = `role`.id LEFT JOIN employee AS m ON m.id = e.manager_id;";
     connection.query(query, function(err, res) {
-      if(err) throw err;
-      console.log(res);
-    }) ;
-}
+        if(err) throw err;
+        console.log(space),
+        console.table(res),
+        console.log('\n')
+        options();
+    }
+)}
 
 
 function addEmployee() {
@@ -241,7 +251,7 @@ function viewAllDepartments(answer) {
     const query = "SELECT * FROM department"
     connection.query(query, function(err, res) {
         if(err) throw err;
-        console.log(res);
+        console.table(res);
     })
 
 }
