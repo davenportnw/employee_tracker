@@ -112,7 +112,7 @@ function options() {
 //* VIEW *//
 
 function viewAllEmployees() {
-    var query = "SELECT e.first_name, e.last_name, title, salary, department_name, m.first_name, m.last_name FROM `role` INNER JOIN department ON department.id =`role`.department_id INNER JOIN employee AS e ON e.role_id = `role`.id LEFT JOIN employee AS m ON m.id = e.manager_id;";
+    var query = "SELECT e.first_name, e.last_name, title, salary, department_name, m.first_name, m.last_name FROM `role` INNER JOIN department ON department.id =`role`.department_id INNER JOIN employee AS e ON e.role_id = `role`.id RIGHT JOIN employee AS m ON m.id = e.manager_id";
     connection.query(query, function(err, res) {
         if(err) throw err;
         console.log(space),
@@ -145,6 +145,8 @@ function viewAllRoles() {
     })
 };
 
+
+//* ADD *//
 
 function addEmployee() {
     inquirer
@@ -182,7 +184,8 @@ function addEmployee() {
     ]).then( answers => {
         connection.query(`INSERT employee (first_name, last_name, role_id, manager_id) VALUES ('${answers.first_name}', '${answers.last_name}', '${answers.role_id}', '${answers.manager_id}')`, function(err, data){
         if(err) throw err;
-        console.log("Employee sucessfully added!")
+        console.log("Employee sucessfully added!");
+        options();
         })
     })
 }
@@ -199,6 +202,7 @@ function deleteEmployee() {
         connection.query(query, [answers.name], function(err, data) {
             if(err) throw err;
             console.log("You have sucessfully removed " + '"' + answers.name + '"');
+            options();
         })
     })
 }
