@@ -284,6 +284,8 @@ function deleteDepartment() {
     })
 
 }
+
+
 //* UPDATE *//
 
 function updateEmployee() {
@@ -338,8 +340,10 @@ function updateName() {
     //         message: 'What is the updated last name?'
         }
     ]).then (answers => {
-        const query1 = "UPDATE employee SET first_name = ? WHERE first_name = ?"
-        connection.query(query1, [answers.firstName,answers.changeFirstName], function(err, data) { 
+        const query1 = "UPDATE employee SET first_name = ? WHERE first_name = ?;"
+        // console.log('changeFirstname', answers.changeFirstname);
+        // console.log('firstName', answers.firstName);
+        connection.query(query1, [answers.firstName, answers.changeFirstname], function(err, data) { 
             if(err) throw err;
             console.log("You have sucessfully updated!" )
         })
@@ -348,5 +352,8 @@ function updateName() {
         //     if(err) throw err;
     
         // })
+        // [answers.firstName, answers.changeFirstName],
     })
 }}
+
+module.exports = connection;  
