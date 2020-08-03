@@ -19,7 +19,7 @@ connection.connect(function(err) {
 })
 
 
-function welcome() {
+async function welcome() {
     connection.connect(function(err){
         figlet.text('Employee Managment', function(err,data) {
             if (err){
@@ -40,8 +40,8 @@ const space = '\n \n';
 
 
 //USER OPTIONS MENU //
-function options() {
-    inquirer
+async function options() {
+    await inquirer
     .prompt({
         name: "options",
         type: "rawlist",
@@ -85,7 +85,7 @@ function options() {
         break;
 
         case "Remove Department":
-        removeDepartment();
+        deleteDepartment();
         break;
 
         case "Add a role":
@@ -190,123 +190,6 @@ function addEmployee() {
     })
 }
 
-
-function deleteEmployee() {
-    inquirer
-    .prompt({
-        type: 'input',
-        name: 'name',
-        message: 'Which employee would you like to remove?'
-    }).then (answers => {
-        const query = "DELETE FROM employee WHERE first_name = ? "
-        connection.query(query, [answers.name], function(err, data) {
-            if(err) throw err;
-            console.log("You have sucessfully removed " + '"' + answers.name + '"');
-            options();
-        })
-    })
-}
-
-function updateEmployee() {
-    inquirer
-    .prompt([ 
-        {
-            type: 'list',
-            name: 'choices',
-            message: 'What would you like to update?',
-            choices: [
-                "Update Name",
-                "Update Role ID",
-                "Update Manager ID"
-            ]
-        }
-    ]).then (answers => {
-        switch (answers.choices) {
-            case "Update Name":
-            updateName();
-            break;
-
-            case "Update Role ID":
-            //add function
-            console.log("Nothing");
-            break;
-
-            case "Update Manager ID":
-            //add function
-            console.log("Nothing");
-            break;
-    }
-})
-
-//Update employee functions//
-
-function updateName() { 
-    inquirer
-    .prompt([
-        {
-            type: 'input',
-            name: 'changeFirstname',
-            message: 'Which employee would you like to change? (First name only)'
-
-        },
-        {
-            type: 'input',
-            name: 'firstName',
-            message: 'What is the updated first name?'
-        },
-        {
-            type: 'input',
-            name: 'lastName',
-            message: 'What is the updated last name?'
-        }
-    ]).then (answers => {
-        const query1 = "UPDATE employee SET first_name = ? WHERE first_name = ?"
-        connection.query(query1, [answers.firstName,answers.changeFirstName], function(err, data) { 
-            if(err) throw err;
-            console.log("You have sucessfully updated!" )
-        })
-        const query2 = "UPDATE employee SET last_name =? WHERE first_name =?"
-        connection.query(query2, [answers.lastName, answers.changeFirstName], function(err, data) { 
-            if(err) throw err;
-
-        })
-    })
-}
-
-
-
-function addDepartment() { 
-    inquirer
-    .prompt ({
-        type: 'input',
-        name: 'deptName',
-        message: 'What is the departments name?'
-    }).then(answers => {
-        const query = "INSERT INTO department (department_name) VALUES (?)";
-        connection.query(query, [answers.deptName], function (err, data) {
-            if (err) throw err;
-            console.log(answers.deptName + " department sucessfully added!");
-        })
-    })
-}
-
-function removeDepartment() {
-    inquirer
-    .prompt({
-        type: 'input',
-        name:'removeDept',
-        message: 'Which department would you like to remove?'
-    }).then(answers => {
-        const query = "DELETE FROM department WHERE department_name = (?)"
-        connection.query(query, [answers.removeDept], function(err, data) {
-            if (err) throw err;
-            console.log("Sucessfully deleted " + ' " ' +  answers.removeDept + ' " ');
-        })
-    })
-}
-
-
-
 function addRole() {
     const prompt = inquirer.createPromptModule();
     prompt ([
@@ -328,13 +211,46 @@ function addRole() {
     }
     ]).then (answers => {
         const query = "INSERT INTO `role` (title, salary, department_id) VALUES (?,?,?) "
-    connection.query(query, [answers.role_name, answers.salary, answers.department_id], function(err, data) {
+        connection.query(query, [answers.role_name, answers.salary, answers.department_id], function(err, data) {
         if (err) throw err;
         console.log("You sucessfully added the " + '"' + answers.role_name + '"' + "role" );
-    })
+        })
+        options();
     })
 };
 
+function addDepartment() { 
+    inquirer
+    .prompt ({
+        type: 'input',
+        name: 'deptName',
+        message: 'What is the departments name?'
+    }).then(answers => {
+        const query = "INSERT INTO department (department_name) VALUES (?)";
+        connection.query(query, [answers.deptName], function (err, data) {
+            if (err) throw err;
+            console.log(answers.deptName + " department sucessfully added!");
+        })
+        options();
+    })
+}
+
+//* DELETE *//
+function deleteEmployee() {
+    inquirer
+    .prompt({
+        type: 'input',
+        name: 'name',
+        message: 'Which employee would you like to remove?'
+    }).then (answers => {
+        const query = "DELETE FROM employee WHERE first_name = ? "
+        connection.query(query, [answers.name], function(err, data) {
+            if(err) throw err;
+            console.log("You have sucessfully removed " + '"' + answers.name + '"');
+            options();
+        })
+    })
+}
 
 function deleteRole() {
     inquirer
@@ -347,6 +263,90 @@ function deleteRole() {
         connection.query(query, [answers.role], function(err, data) {
             if (err) throw err;
             console.log("You have sucessfully deleted " + '" ' + answers.role + ' "' + "role" );
+            options();
         })
+    })
+}
+
+function deleteDepartment() {
+    inquirer
+    .prompt ({
+        type: 'input',
+        name: 'deleteDep',
+        message: 'What department would you like to delete?'
+    }).then (answers => {
+        const query = 'DELETE FROM department WHERE department_name = ?';
+        connection.query(query, [answers.deleteDep], function(err, data) {
+            if (err) throw err;
+            console.log( answers.deleteDep + ' has been sucessfully removed!')
+        })
+        options();
+    })
+
+}
+//* UPDATE *//
+
+function updateEmployee() {
+    inquirer
+    .prompt([ 
+        {
+            type: 'list',
+            name: 'choices',
+            message: 'What would you like to update?',
+            choices: [
+                "Update Name",
+                "Update Role ID",
+                "Update Manager ID"
+            ]
+        }
+    ]).then (answers => {
+        switch (answers.choices) {
+            case "Update Name":
+            updateName();
+            break;
+
+            case "Update Role ID":
+            updateRole();
+            break;
+
+            case "Update Manager ID":
+            //add function
+            console.log("Nothing");
+            break;
+    }
+})
+
+
+
+function updateName() { 
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'changeFirstname',
+            message: 'Which employee would you like to change? (First name only)'
+
+        },
+        {
+            type: 'input',
+            name: 'firstName',
+            message: 'What is the updated first name?'
+    //     },
+    //     {
+    //         type: 'input',
+    //         name: 'lastName',
+    //         message: 'What is the updated last name?'
+        }
+    ]).then (answers => {
+        const query1 = "UPDATE employee SET first_name = ? WHERE first_name = ?"
+        connection.query(query1, [answers.firstName,answers.changeFirstName], function(err, data) { 
+            if(err) throw err;
+            console.log("You have sucessfully updated!" )
+        })
+        // const query2 = "UPDATE employee SET last_name =? WHERE first_name =?"
+        // connection.query(query2, [answers.lastName, answers.changeFirstName], function(err, data) { 
+        //     if(err) throw err;
+    
+        // })
     })
 }}
