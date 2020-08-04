@@ -27,6 +27,7 @@ async function welcome() {
                 console.dir(err);
                 return;
             }
+            console.log(space);
             console.log(data); 
         })
         options();
@@ -112,7 +113,7 @@ async function options() {
 //* VIEW *//
 
 function viewAllEmployees() {
-    var query = "SELECT e.first_name, e.last_name, title, salary, department_name, m.first_name, m.last_name FROM `role` INNER JOIN department ON department.id =`role`.department_id INNER JOIN employee AS e ON e.role_id = `role`.id RIGHT JOIN employee AS m ON m.id = e.manager_id";
+    var query = "SELECT e.first_name, e.last_name, title, salary, department_name, m.first_name, m.last_name FROM `role` INNER JOIN department ON department.id =`role`.department_id INNER JOIN employee AS e ON e.role_id = `role`.id LEFT JOIN employee AS m ON m.id = e.manager_id";
     connection.query(query, function(err, res) {
         if(err) throw err;
         console.log(space),
@@ -308,12 +309,11 @@ function updateEmployee() {
             break;
 
             case "Update Role ID":
-            updateRole();
+            updateRoleID();
             break;
 
             case "Update Manager ID":
-            //add function
-            console.log("Nothing");
+            updateManager();
             break;
     }
 })
@@ -356,4 +356,50 @@ function updateName() {
     })
 }}
 
-module.exports = connection;  
+
+function updateRoleID() {
+    inquirer
+    .prompt ([
+        {
+            type: 'input',
+            name: 'employeeName',
+            message: 'Which employee would you like to update?'
+        },
+        {
+            type: 'input',
+            name: 'newRole',
+            message: 'What is the new role ID number?'
+        }
+    ]).then (answers => {
+        const query = 'UPDATE employee SET role_id = ? WHERE first_name = ?;';
+        connection.query(query, [answers.employeeName, answers.newrole], function(err, data) {
+            if (err) throw err;
+            console.log("You have sucessfully updated " + answers.employeeName + " role ID!");
+        })
+    }
+)}
+
+
+function updateManager() {
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'Which employee would you like to update the manager for?'
+        },
+        {
+            type: 'number',
+            name: 'manager_ID',
+            name: 'What is the new managers ID number?'
+        }
+    ]).then(answers=> {
+        const query = 'UPDATE employee SET manager_id = ? WHERE first_name = ?;'
+        connection.query(query, [answers.manager_id, answers.name], function(err, data) {
+            if(err) throw err;
+            console.log("You have sucessfully updated " + answers.name + " manager!");
+        })
+        console.log(space);
+        options();
+    })
+}
