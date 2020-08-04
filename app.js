@@ -19,7 +19,7 @@ connection.connect(function(err) {
 })
 
 
-async function welcome() {
+function welcome() {
     connection.connect(function(err){
         figlet.text('Employee Managment', function(err,data) {
             if (err){
@@ -38,6 +38,23 @@ async function welcome() {
 //USER FRIENDLY VIEWING VARIABLES//
 
 const space = '\n \n';
+//END//
+
+function exit() {
+    connection.connect(function(err){
+        figlet.text('Goodbye', function(err,data) {
+            if (err){
+                console.log("Uh oh, there's an error.");
+                console.dir(err);
+                return;
+            }
+            console.log(space);
+            console.log(data); 
+        })
+        connection.end();
+    }
+)}
+  
 
 
 //USER OPTIONS MENU //
@@ -57,7 +74,8 @@ async function options() {
             "Remove Department",
             "Add a role",
             "Remove a role",
-            "Update Employee"
+            "Update Employee",
+            "Exit"
         ]
     }).then(function(answer) {
         switch (answer.options) {
@@ -99,6 +117,10 @@ async function options() {
 
         case "Update Employee":
         updateEmployee();
+        break;
+
+        case "Exit":
+        exit();
         break;
         }
 
