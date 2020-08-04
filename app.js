@@ -333,26 +333,26 @@ function updateName() {
             type: 'input',
             name: 'firstName',
             message: 'What is the updated first name?'
-    //     },
-    //     {
-    //         type: 'input',
-    //         name: 'lastName',
-    //         message: 'What is the updated last name?'
+        },
+        {
+            type: 'input',
+            name: 'lastName',
+            message: 'What is the updated last name?'
         }
     ]).then (answers => {
         const query1 = "UPDATE employee SET first_name = ? WHERE first_name = ?;"
-        // console.log('changeFirstname', answers.changeFirstname);
-        // console.log('firstName', answers.firstName);
+        const query2 = "UPDATE employee SET last_name =? WHERE first_name =?;"
+        console.log('changeFirstName', answers.changeFirstname);
+        console.log('firstName', answers.firstName);
+        console.log('lastName', answers.lastName);
         connection.query(query1, [answers.firstName, answers.changeFirstname], function(err, data) { 
+            if(err) throw err;
+        })
+        connection.query(query2, [answers.lastName, answers.changeFirstname], function(err, data) { 
             if(err) throw err;
             console.log("You have sucessfully updated!" )
         })
-        // const query2 = "UPDATE employee SET last_name =? WHERE first_name =?"
-        // connection.query(query2, [answers.lastName, answers.changeFirstName], function(err, data) { 
-        //     if(err) throw err;
-    
-        // })
-        // [answers.firstName, answers.changeFirstName],
+        options();
     })
 }}
 
