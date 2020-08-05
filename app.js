@@ -123,7 +123,6 @@ async function options() {
         exit();
         break;
         }
-
     
     })
 }
@@ -136,8 +135,7 @@ async function options() {
 
 function viewAllEmployees() {
     var query = "SELECT e.first_name, e.last_name, title, salary, department_name, m.first_name AS manager_first_name, m.last_name AS manager_last_name FROM `role` INNER JOIN department ON department.id =`role`.department_id INNER JOIN employee AS e ON e.role_id = `role`.id LEFT JOIN employee AS m ON m.id = e.manager_id;";
-    connection.query(query, function(err, res) {
-        console.log('query', query);
+    connection.query(query, function(err, res) {    
         if(err) throw err;
         console.log(space),
         console.table(res),
@@ -271,8 +269,8 @@ function deleteEmployee() {
         connection.query(query, [answers.name], function(err, data) {
             if(err) throw err;
             console.log("You have sucessfully removed " + '"' + answers.name + '"');
-            options();
         })
+        options();
     })
 }
 
@@ -287,8 +285,8 @@ function deleteRole() {
         connection.query(query, [answers.role], function(err, data) {
             if (err) throw err;
             console.log("You have sucessfully deleted " + '" ' + answers.role + ' "' + "role" );
-            options();
         })
+        options();
     })
 }
 
@@ -302,9 +300,9 @@ function deleteDepartment() {
         const query = 'DELETE FROM department WHERE department_name = ?';
         connection.query(query, [answers.deleteDep], function(err, data) {
             if (err) throw err;
-            console.log( answers.deleteDep + ' has been sucessfully removed!')
+            console.log( answers.deleteDep + ' has been sucessfully removed!');
+            options();
         })
-        options();
     })
 
 }
@@ -394,11 +392,12 @@ function updateRoleID() {
             message: 'What is the new role ID number?'
         }
     ]).then (answers => {
-        const query = 'UPDATE employee SET role_id = ? WHERE first_name = ?;';
-        connection.query(query, [answers.employeeName, answers.newrole], function(err, data) {
+        const query = 'UPDATE employee SET role_id = ? WHERE first_name = ?';
+        connection.query(query, [answers.newRole, answers.employeeName], function(err, data) {
             if (err) throw err;
             console.log("You have sucessfully updated " + answers.employeeName + " role ID!");
         })
+        options();
     }
 )}
 
@@ -413,13 +412,15 @@ function updateManager() {
         },
         {
             type: 'number',
-            name: 'manager_ID',
-            name: 'What is the new managers ID number?'
+            name: 'manager',
+            message: 'What is the new managers ID number?'
         }
     ]).then(answers=> {
-        const query = 'UPDATE employee SET manager_id = ? WHERE first_name = ?;'
-        connection.query(query, [answers.manager_id, answers.name], function(err, data) {
+        const query = 'UPDATE employee SET manager_id = ?  WHERE first_name = ?';
+        connection.query(query, [answers.manager, answers.name], function(err, data) {
             if(err) throw err;
+            console.log("name", answers.name);
+            console.log('man id', answers.manager);
             console.log("You have sucessfully updated " + answers.name + " manager!");
         })
         console.log(space);
