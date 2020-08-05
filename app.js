@@ -135,8 +135,9 @@ async function options() {
 //* VIEW *//
 
 function viewAllEmployees() {
-    var query = "SELECT e.first_name, e.last_name, title, salary, department_name, m.first_name, m.last_name FROM `role` INNER JOIN department ON department.id =`role`.department_id INNER JOIN employee AS e ON e.role_id = `role`.id LEFT JOIN employee AS m ON m.id = e.manager_id";
+    var query = "SELECT e.first_name, e.last_name, title, salary, department_name, m.first_name AS manager_first_name, m.last_name AS manager_last_name FROM `role` INNER JOIN department ON department.id =`role`.department_id INNER JOIN employee AS e ON e.role_id = `role`.id LEFT JOIN employee AS m ON m.id = e.manager_id;";
     connection.query(query, function(err, res) {
+        console.log('query', query);
         if(err) throw err;
         console.log(space),
         console.table(res),
